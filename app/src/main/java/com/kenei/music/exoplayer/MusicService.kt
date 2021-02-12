@@ -18,6 +18,7 @@ import com.kenei.music.exoplayer.callbacks.MusicPlaybackPreparer
 import com.kenei.music.exoplayer.callbacks.MusicPlayerEventListener
 import com.kenei.music.exoplayer.callbacks.MusicPlayerNotificationListener
 import com.kenei.music.other.Constants.MEDIA_ROOT_ID
+import com.kenei.music.other.Constants.NETWORK_ERROR
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -157,6 +158,7 @@ serviceScope.launch {
                             isPlayerInitialized = true
                         }
                     } else {
+                        mediaSession.sendSessionEvent(NETWORK_ERROR, null)
                         result.sendResult(null)
                     }
                 }
