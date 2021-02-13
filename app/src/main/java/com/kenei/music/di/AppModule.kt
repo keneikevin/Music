@@ -5,6 +5,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.kenei.music.R
+import com.kenei.music.adapters.SwipeSongAdapter
 import com.kenei.music.exoplayer.MusicServiceConnection
 import dagger.Module
 import dagger.Provides
@@ -17,6 +18,9 @@ import javax.inject.Singleton
 @InstallIn(ApplicationComponent::class)
 object AppModule {
 
+    @Singleton
+    @Provides
+    fun provideSwipeSongAdapter() = SwipeSongAdapter()
 
     @Singleton
     @Provides
