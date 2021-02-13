@@ -11,7 +11,6 @@ import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
-import com.google.android.exoplayer2.ext.mediasession.TimelineQueueEditor
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.kenei.music.exoplayer.callbacks.MusicPlaybackPreparer
@@ -49,20 +48,21 @@ class MusicService : MediaBrowserServiceCompat() {
     var isForegroundService = false
 
     private var curPlayingSong: MediaMetadataCompat? = null
+
     private var isPlayerInitialized = false
 
     private lateinit var musicPlayerEventListener: MusicPlayerEventListener
 
-    companion object{
+    companion object {
         var curSongDuration = 0L
-        private set
+            private set
     }
 
     override fun onCreate() {
         super.onCreate()
-serviceScope.launch {
-    firebaseMusicSource.fetchMediaData()
-}
+        serviceScope.launch {
+            firebaseMusicSource.fetchMediaData()
+        }
 
         val activityIntent = packageManager?.getLaunchIntentForPackage(packageName)?.let {
             PendingIntent.getActivity(this, 0, it, 0)
@@ -102,15 +102,11 @@ serviceScope.launch {
         musicNotificationManager.showNotification(exoPlayer)
     }
 
-        private inner class MusicQueueNavigator: TimelineQueueNavigator(mediaSession){
-            override fun getMediaDescription(
-                player: Player,
-                windowIndex: Int
-            ): MediaDescriptionCompat {
-                return firebaseMusicSource.songs[windowIndex].description
-            }
-
+    private inner class MusicQueueNavigator : TimelineQueueNavigator(mediaSession) {
+        override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
+            return firebaseMusicSource.songs[windowIndex].description
         }
+    }
 
     private fun preparePlayer(
         songs: List<MediaMetadataCompat>,
@@ -141,19 +137,19 @@ serviceScope.launch {
         clientUid: Int,
         rootHints: Bundle?
     ): BrowserRoot? {
-        return BrowserRoot(MEDIA_ROOT_ID,null)
+        return BrowserRoot(MEDIA_ROOT_ID, null)
     }
 
     override fun onLoadChildren(
         parentId: String,
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
-            when(parentId){
-                MEDIA_ROOT_ID ->{
-                val resultSent = firebaseMusicSource.whenReady { isinitialized ->
-                    if (isinitialized){
+        when(parentId) {
+            MEDIA_ROOT_ID -> {
+                val resultsSent = firebaseMusicSource.whenReady { isInitialized ->
+                    if(isInitialized) {
                         result.sendResult(firebaseMusicSource.asMediaItems())
-                        if (!isPlayerInitialized && firebaseMusicSource.songs.isNotEmpty()){
+                        if(!isPlayerInitialized && firebaseMusicSource.songs.isNotEmpty()) {
                             preparePlayer(firebaseMusicSource.songs, firebaseMusicSource.songs[0], false)
                             isPlayerInitialized = true
                         }
@@ -162,16 +158,13 @@ serviceScope.launch {
                         result.sendResult(null)
                     }
                 }
-                    if (!resultSent){
-                        result.detach()
-                    }
+                if(!resultsSent) {
+                    result.detach()
                 }
             }
+        }
     }
 }
-
-
-
 
 
 

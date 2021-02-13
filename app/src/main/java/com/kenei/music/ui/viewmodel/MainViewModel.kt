@@ -13,7 +13,6 @@ import com.kenei.music.exoplayer.isPlaying
 import com.kenei.music.exoplayer.isPrepared
 import com.kenei.music.other.Constants.MEDIA_ROOT_ID
 import com.kenei.music.other.Resource
-
 class MainViewModel @ViewModelInject constructor(
     private val musicServiceConnection: MusicServiceConnection
 ) : ViewModel() {
@@ -80,6 +79,8 @@ class MainViewModel @ViewModelInject constructor(
         musicServiceConnection.unsubscribe(MEDIA_ROOT_ID, object : MediaBrowserCompat.SubscriptionCallback() {})
     }
 }
+
+
 
 
 
